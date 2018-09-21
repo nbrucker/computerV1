@@ -57,12 +57,53 @@ def removeEmpty(reduce):
 		i -= 1
 	return reduce
 
+def fix(s):
+    i = 0
+    while (i < len(s)):
+        while (i < len(s) and not isDigit(s[i]) and s[i] != 'X'):
+            i += 1
+        if (i < len(s) and s[i] == 'X'):
+            s = s[:i] + '1 * ' + s[i:]
+            i += 5
+            if (i < len(s) and s[i] != '^'):
+                s = s[:i] + '^1' + s[i:]
+        if (i < len(s) and isDigit(s[i])):
+            i += 2
+            if (i < len(s) and s[i] == '*'):
+                i += 3
+                if (i < len(s) and s[i] != '^'):
+                    s = s[:i] + '^1' + s[i:]
+            else:
+                s = s[:i] + '* X^0 ' + s[i:]
+        while (i < len(s) and s[i] != '+' and s[i] != '-'):
+            i += 1
+        i += 1
+    return s
+
+def fixSpace(s):
+    s = s.replace(" ", "")
+    i = 0
+    while (i < len(s)):
+        if (isDigit(s[i]) or s[i] == '+' or s[i] == '*' or s[i] == '='):
+            i += 1
+            s = s[:i] + ' ' + s[i:]
+        elif (s[i] == '-' and i != 0):
+            i += 1
+            s = s[:i] + ' ' + s[i:]
+        elif (s[i] == 'X' and i + 1 < len(s) and s[i + 1] != '^'):
+            i += 1
+            s = s[:i] + ' ' + s[i:]
+        i += 1
+    return s
+
 if __name__ == "__main__":
 	if (len(sys.argv) != 2):
 		error('python main.py [equation]')
 	equation = sys.argv[1]
 	# parser/lexer
+	equation = fixSpace(equation)
 	before, after = equation.split('=')
+	before = fix(before)
 	before = parse(before)
 	after = parse(after)
 	reduce = reduceForm(before, after)
@@ -70,4 +111,3 @@ if __name__ == "__main__":
 	displayReduce(reduce)
 	displayDeg(reduce)
 	solve(reduce)
-
