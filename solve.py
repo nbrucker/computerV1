@@ -1,5 +1,11 @@
 import math
 
+def solveZero(reduce):
+	if (reduce[0] == 0):
+		print('Every real number is a solution')
+	else:
+		print('No solution')
+
 def solveOne(reduce):
 	print('The solution is:')
 	result = float(reduce[0] * -1) / reduce[1]
@@ -15,7 +21,7 @@ def solveTwo(reduce):
 		print(round(((-reduce[1] - math.sqrt(delta)) / (2 * reduce[2])), 6))
 		print(round(((-reduce[1] + math.sqrt(delta)) / (2 * reduce[2])), 6))
 	elif (delta == 0):
-		print('Discriminant is 0, the solution is:')
+		print('Discriminant is nul, the solution is:')
 		print(round((float(-reduce[1]) / (2 * reduce[2])), 6))
 	else:
 		print('Discriminant is strictly negative, no solution')
@@ -23,7 +29,7 @@ def solveTwo(reduce):
 def	solve(reduce):
 	deg = len(reduce) - 1
 	if (deg < 1):
-		print('The polynomial degree is stricly lower than 1, I can\'t solve.')
+		solveZero(reduce)
 	elif (deg == 1):
 		solveOne(reduce)
 	elif (deg == 2):
