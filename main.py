@@ -17,41 +17,67 @@ def toDigit(x):
 	except ValueError:
 		return float(x)
 
+def expoCheck(tab, x):
+    i = 0
+    while (i < len(tab)):
+        if (tab[i] == x):
+            return i
+        i += 1
+    return -1
 
 def parse(x):
 	tab = x.split(' ')
 	new = []
+	num = []
+	expo = []
 	i = 0
 	while (i < len(tab)):
 		if (isDigit(tab[i])):
 			sign = 1
 			if (i > 0 and tab[i - 1] == '-'):
 				sign = -1
-			new.append(toDigit(tab[i]) * sign)
+			if (i + 2 < len(tab)):
+				n = expoCheck(expo, toDigit(tab[i + 2][2:]))
+				if (n == -1):
+					num.append(toDigit(tab[i]) * sign)
+					expo.append(toDigit(tab[i + 2][2:]))
+				else:
+					num[n] += toDigit(tab[i]) * sign
 		i += 1
+	new.append(num)
+	new.append(expo)
 	return new
 
 def reduceForm(before, after):
 	new = []
-	x = len(after)
-	if (x < len(before)):
-		x = len(before)
+	num = []
+	expo = []
 	i = 0
-	while (i < x):
-		if (i >= len(after)):
-			new.append(before[i])
-		elif (i >= len(before)):
-			new.append(after[i])
+	while (i < len(before[1])):
+		n = expoCheck(after[1], before[1][i])
+		if (n == -1):
+			num.append(before[0][i])
 		else:
-			new.append(before[i] - after[i])
+			num.append(before[0][i] - after[0][n])
+			del after[0][n]
+			del after[1][n]
+		expo.append(before[1][i])
 		i += 1
+	i = 0
+	while (i < len(after[1])):
+		num.append(-after[0][i])
+		expo.append(after[1][i])
+		i += 1
+	new.append(num)
+	new.append(expo)
 	return new
 
 def removeEmpty(reduce):
-	i = len(reduce) - 1
+	i = len(reduce[0]) - 1
 	while (i > 0):
-		if (reduce[i] == 0):
-			del reduce[i]
+		if (reduce[0][i] == 0):
+			del reduce[0][i]
+			del reduce[1][i]
 		else:
 			return reduce
 		i -= 1
@@ -68,7 +94,7 @@ def fix(s):
             if (i < len(s) and s[i] != '^'):
                 s = s[:i] + '^1' + s[i:]
         if (i < len(s) and isDigit(s[i])):
-            i += 2
+            i = digitLen(s, i) + 1
             if (i < len(s) and s[i] == '*'):
                 i += 3
                 if (i < len(s) and s[i] != '^'):
@@ -80,12 +106,20 @@ def fix(s):
         i += 1
     return s
 
+def digitLen(s, i):
+    while (i < len(s) and (isDigit(s[i]) or s[i] == '.')):
+        i += 1
+    return i
+
 def fixSpace(s):
     s = s.replace(" ", "")
     i = 0
     while (i < len(s)):
-        if (isDigit(s[i]) or s[i] == '+' or s[i] == '*' or s[i] == '='):
+        if (s[i] == '+' or s[i] == '*' or s[i] == '='):
             i += 1
+            s = s[:i] + ' ' + s[i:]
+        elif (isDigit(s[i])):
+            i = digitLen(s, i)
             s = s[:i] + ' ' + s[i:]
         elif (s[i] == '-' and i != 0):
             i += 1
@@ -96,18 +130,57 @@ def fixSpace(s):
         i += 1
     return s
 
+def check(eq):
+    i = 0
+    equal = 0
+    while (i < len(eq)):
+        if (eq[i] == '='):
+            equal += 1
+            i += 1
+        elif (isDigit(eq[i]) or eq[i] == '^' or eq[i] == '+' or eq[i] == '-'
+         or eq[i] == ' ' or eq[i] == '*' or eq[i] == '.' or eq[i] == 'X'):
+            i += 1
+        else:
+            return False
+    if (equal != 1):
+        return False
+    else:
+        return True
+
+def sort(reduce):
+	i = 0
+	while (i < len(reduce[0])):
+		j = i
+		while (j < len(reduce[0])):
+			if (reduce[1][i] < reduce[1][j]):
+				tmp = reduce[0][i]
+				reduce[0][i] = reduce[0][j]
+				reduce[0][j] = tmp
+				tmp = reduce[1][i]
+				reduce[1][i] = reduce[1][j]
+				reduce[1][j] = tmp
+			j += 1
+		i += 1
+	return reduce
+
 if __name__ == "__main__":
-	if (len(sys.argv) != 2):
-		error('python main.py [equation]')
-	equation = sys.argv[1]
-	# parser/lexer
+	if (len(sys.argv) == 2):
+		equation = sys.argv[1]
+	elif (len(sys.argv) == 3):
+		equation = sys.argv[2]
+	else:
+		error('python main.py [-d] [equation]')
+	if (check(equation) == False):
+		error('unvalid')
 	equation = fixSpace(equation)
 	before, after = equation.split('=')
 	before = fix(before)
+	after = fix(after)
 	before = parse(before)
 	after = parse(after)
 	reduce = reduceForm(before, after)
 	reduce = removeEmpty(reduce)
+	reduce = sort(reduce)
 	displayReduce(reduce)
 	displayDeg(reduce)
 	solve(reduce)
