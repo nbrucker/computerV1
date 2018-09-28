@@ -164,12 +164,14 @@ def sort(reduce):
 	return reduce
 
 def OptionCheck(option):
-    i = 0
-    while (i < len(option)):
-        if (option[0] == "-" or option[i] == "c" or option[i] == "d"):
-            i += 1
-        else:
-            error('Bad option')
+	if (len(option) < 2 or option[0] != '-'):
+		error('Bad options')
+	i = 1
+	while (i < len(option)):
+		if (option[i] == "c" or option[i] == "d"):
+			i += 1
+		else:
+			error('Bad options')
 
 if __name__ == "__main__":
 	if (len(sys.argv) == 2):
@@ -180,9 +182,9 @@ if __name__ == "__main__":
 		OptionCheck(option)
 		equation = sys.argv[2]
 	else:
-		error('python main.py [-d] [equation]')
+		error('python main.py [-dc] [equation]')
 	if (check(equation) == False):
-		error('unvalid')
+		error('Unvalid equation')
 	equation = fixSpace(equation)
 	before, after = equation.split('=')
 	before = fix(before)
