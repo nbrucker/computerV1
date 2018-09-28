@@ -16,3 +16,10 @@ def displayReduce(reduce):
 
 def displayDeg(reduce):
 	print('Polynomial degree: ' + str(reduce[1][0]))
+
+def displayTwo(a, b, delta, sign):
+	new = ''
+	new += '-' + str(abs(b)) + ' ' + sign + ' i('
+	new += str(abs(delta)) + ')'
+	new += ' / 2 * ' + str(abs(a))
+	print new

@@ -1,5 +1,14 @@
 import math
 import sys
+from display import displayTwo
+
+def findOption(option, x):
+	i = 0
+	while (i < len(option)):
+		if (option[i] == x):
+			return True
+		i += 1
+	return False
 
 def findDeg(reduce, x):
 	i = 0
@@ -26,12 +35,12 @@ def solveOne(reduce):
 	else:
 		print(result)
 
-def solveTwo(reduce):
+def solveTwo(reduce, option):
 	a = findDeg(reduce, 2)
 	b = findDeg(reduce, 1)
 	c = findDeg(reduce, 0)
 	delta = (b ** 2) - (4 * a * c)
-	if (len(sys.argv) == 3 and sys.argv[1] == '-d'):
+	if (findOption(option, 'd') == True):
 		print('Delta: ' + str(round(delta, 6)))
 	if (delta > 0):
 		print('Discriminant is strictly positive, the two solutions are:')
@@ -40,16 +49,20 @@ def solveTwo(reduce):
 	elif (delta == 0):
 		print('Discriminant is nul, the solution is:')
 		print(round((float(-b) / (2 * a)), 6))
+	elif (delta < 0 and findOption(option, 'c') == True):
+		print ("Discriminant is stricly negatve, there is two solution in C:")
+		displayTwo(a, b, delta, '-')
+		displayTwo(a, b, delta, '+')
 	else:
-		print('Discriminant is strictly negative, no solution')
+		print('Discriminant is strictly negative, no solution in R')
 
-def	solve(reduce):
+def	solve(reduce, option):
 	deg = reduce[1][0]
 	if (deg < 1):
 		solveZero(reduce)
 	elif (deg == 1):
 		solveOne(reduce)
 	elif (deg == 2):
-		solveTwo(reduce)
+		solveTwo(reduce, option)
 	elif (deg > 2):
 		print('The polynomial degree is stricly greater than 2, I can\'t solve.')

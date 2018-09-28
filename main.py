@@ -163,10 +163,21 @@ def sort(reduce):
 		i += 1
 	return reduce
 
+def OptionCheck(option):
+    i = 0
+    while (i < len(option)):
+        if (option[0] == "-" or option[i] == "c" or option[i] == "d"):
+            i += 1
+        else:
+            error('Bad option')
+
 if __name__ == "__main__":
 	if (len(sys.argv) == 2):
 		equation = sys.argv[1]
+		option = list("")
 	elif (len(sys.argv) == 3):
+		option = list(sys.argv[1])
+		OptionCheck(option)
 		equation = sys.argv[2]
 	else:
 		error('python main.py [-d] [equation]')
@@ -183,4 +194,4 @@ if __name__ == "__main__":
 	reduce = sort(reduce)
 	displayReduce(reduce)
 	displayDeg(reduce)
-	solve(reduce)
+	solve(reduce, option)
