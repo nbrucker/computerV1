@@ -50,7 +50,7 @@ def solveTwo(reduce, option):
 		print('Discriminant is nul, the solution is:')
 		print(round((float(-b) / (2 * a)), 6))
 	elif (delta < 0 and findOption(option, 'c') == True):
-		print ("Discriminant is stricly negatve, there is two solution in C:")
+		print ("Discriminant is stricly negatve, there are two solution in C:")
 		displayTwo(a, b, delta, '-')
 		displayTwo(a, b, delta, '+')
 	else:
