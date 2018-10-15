@@ -18,9 +18,11 @@ def findDeg(reduce, x):
 		i += 1
 	return 0
 
-def solveZero(reduce):
+def solveZero(reduce, option):
 	a = findDeg(reduce, 0)
-	if (a == 0):
+	if (a == 0 and findOption(option, 'c') == True):
+		print('Every number is a solution')
+	elif (a == 0):
 		print('Every real number is a solution')
 	else:
 		print('No solution')
@@ -58,11 +60,13 @@ def solveTwo(reduce, option):
 
 def	solve(reduce, option):
 	deg = reduce[1][0]
-	if (deg < 1):
-		solveZero(reduce)
+	if (deg == 0):
+		solveZero(reduce, option)
 	elif (deg == 1):
 		solveOne(reduce)
 	elif (deg == 2):
 		solveTwo(reduce, option)
 	elif (deg > 2):
 		print('The polynomial degree is stricly greater than 2, I can\'t solve.')
+	else:
+		print('I can\'t solve.')

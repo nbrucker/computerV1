@@ -121,7 +121,7 @@ def fixSpace(s):
         elif (isDigit(s[i])):
             i = digitLen(s, i)
             s = s[:i] + ' ' + s[i:]
-        elif (s[i] == '-' and i != 0):
+        elif (s[i] == '-' and i != 0 and s[i - 1] != '^'):
             i += 1
             s = s[:i] + ' ' + s[i:]
         elif (s[i] == 'X' and i + 1 < len(s) and s[i + 1] != '^'):
